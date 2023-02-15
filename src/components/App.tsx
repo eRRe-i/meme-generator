@@ -1,13 +1,14 @@
 import './../assets/styles/App.css'
+import NavBar from './NavBar'
+import MainContent from './MainContent'
 
 
 function App() {
 
   return (
     <div className="App">
-      <h1 className="text-3xl font-bold underline">
-        Hello world!
-    </h1> 
+      <NavBar />
+      <MainContent />
     </div>
   )
 }
