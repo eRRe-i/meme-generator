@@ -3,48 +3,87 @@ import MemeContent from "./MemeContent"
 import { useState } from "react"
 import { memes } from "./data"
 
+type Image = undefined |string
 
 export interface ImageHandler {
-    imageState: string
-    setImageState: ()=>void
-    firstString: string
-    setFirstStringState: (event:React.FormEvent<HTMLInputElement>)=>void
-    secondString: string
-    setSecondStringState: (event:React.FormEvent<HTMLInputElement>)=>void
+
+    imageSrc: Image
+    setImageState: () => void
+
+    imageLink: string
+    imageLinkHandler: (event: React.FormEvent<HTMLInputElement>) => void
+
+    topString: string
+    topStringHandler: (event: React.FormEvent<HTMLInputElement>) => void
+
+    bottomString: string
+    bottomStringHandler: (event: React.FormEvent<HTMLInputElement>) => void
 }
 
 
 export default function MainContent() {
 
-    const [imgSrc, setImgSrc] = useState(()=>{return "https://resizedimgs.vivareal.com/fit-in/870x653/named.images.sp/da8a435c9958b007dfbc0c6f72ef0c9f/%7Bdescription%7D.jpg"})
+    const [imgSrc, setImgSrc] = useState<Image>(() => { return undefined })
 
-    const handler = () => {
-        setImgSrc(()=>{
-            return memes.data.memes[Math.floor(Math.random()*memes.data.memes.length)].url
+    const imgHandler = () => {
+        setImgSrc(() => {
+
+            if(imageLink === "") {
+                return memes.data.memes[Math.floor(Math.random() * memes.data.memes.length)].url //CALL API
+            }
+            return imageLink
+
         });
     }
 
-    const [firstString, setFirstString] = useState("")
-    const [secondString, setSecondString] = useState("")
+    const [topString, setTopString] = useState("")
 
-    const firstStringHandler = (event:React.FormEvent<HTMLInputElement>) => {
+    const topStringHandler = (event: React.FormEvent<HTMLInputElement>) => {
         const newString = event.currentTarget.value
-        setFirstString(string => newString)
-        console.log(newString)
+        setTopString(string => newString)
     }
 
+    const [bottomString, setBottomString] = useState("")
 
-    const secondStringHandler = (event:React.FormEvent<HTMLInputElement>) => {
+    const bottomStringHandler = (event: React.FormEvent<HTMLInputElement>) => {
         const newString = event.currentTarget.value
-        setSecondString(string => newString)
-        console.log(newString)
+        setBottomString(string => newString)
     }
 
-    
+    const [imageLink, setImageLink] = useState("")
+
+    const imageLinkHandler = (event: React.FormEvent<HTMLInputElement>) => {
+        const newString = event.currentTarget.value
+        setImageLink(string => newString)
+    }
+
     return (
         <main className="MainContent">
-            <MemeForms imageState={imgSrc} setImageState={handler} firstString={firstString} secondString={secondString} setFirstStringState={firstStringHandler}  setSecondStringState={secondStringHandler}/>
-            <MemeContent imageState={imgSrc} setImageState={handler} firstString={firstString} secondString={secondString} setFirstStringState={firstStringHandler}  setSecondStringState={secondStringHandler} />
+            <MemeForms
+                imageSrc={imgSrc}
+                setImageState={imgHandler}
+
+                imageLink={imageLink}
+                imageLinkHandler={imageLinkHandler}
+
+                topString={topString}
+                topStringHandler={topStringHandler}
+
+                bottomString={bottomString}
+                bottomStringHandler={bottomStringHandler}
+            />
+            <MemeContent
+                imageSrc={imgSrc}
+                setImageState={imgHandler}
+
+                imageLink={imageLink}
+                imageLinkHandler={imageLinkHandler}
+
+                topString={topString}
+                topStringHandler={topStringHandler}
+
+                bottomString={bottomString}
+                bottomStringHandler={bottomStringHandler} />
         </main>
     )
 }
