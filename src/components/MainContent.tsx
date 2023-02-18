@@ -2,8 +2,10 @@ import MemeForms from "./MemeForms"
 import MemeContent from "./MemeContent"
 import { useState } from "react"
 import { memes } from "./data"
+import axios from "axios"
 
-type Image = undefined |string
+
+type Image = undefined | string
 
 export interface ImageHandler {
 
@@ -25,15 +27,21 @@ export default function MainContent() {
 
     const [imgSrc, setImgSrc] = useState<Image>(() => { return undefined })
 
-    const imgHandler = () => {
-        setImgSrc(() => {
+    const getUrl = async () => {
+        const res = await axios.get("https://meme-api.com/gimme")
+        return res.data.url
+    }
 
-            if(imageLink === "") {
-                return memes.data.memes[Math.floor(Math.random() * memes.data.memes.length)].url //CALL API
-            }
-            return imageLink
+    async function imgHandler(): Promise<void> {
 
-        });
+        if (imageLink === "") {
+            const url = await getUrl()
+            setImgSrc(prevUrl => url)
+        } else {
+            setImgSrc(imageLink)
+        }
+
+
     }
 
     const [topString, setTopString] = useState("")
